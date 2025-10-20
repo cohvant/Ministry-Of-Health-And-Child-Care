@@ -55,7 +55,7 @@ The proposed gym fitness physiotherapy system will offer an integrated platform 
 •	Financial and Administrative Module: Handles the secure online payment workflow for sessions and manages user subscription status.
 
 
-# BY TINASHE CHIKOTI
+# BY TAKUNDA CHIKOTI
 # HARARE POLY 2025
 # THANK YOU
 
