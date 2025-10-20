@@ -39,10 +39,11 @@ Out-of-Scope Activities:
 
 
 # 1.5 Objectives
-The objectives of the system are:
-	To access Assess the workload
-	Track fitness progress
-	 Create a workout plan
+The objectives of the system are.
+
+	To access Assess the workload.
+	Track fitness progress.
+	 Create a workout plan.
 
 # 1.6 Description of Proposed System
 The proposed gym fitness physiotherapy system will offer an integrated platform that combines fitness training with physiotherapy services. Key features include online consultation booking  and personalized workout routines supported by physiotherapists. Users will be able to log workouts, monitor their progress, set fitness goals, and access fitness-related analysis. The system is designed to support physical improvement, boost mental well-being, and encourage social inclusion, ultimately enhancing users' independence and overall health.
