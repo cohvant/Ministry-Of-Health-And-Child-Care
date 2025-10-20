@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ministry Physiotherapy System - Login and Info</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Lora:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --maroon: #800000;
+      --darkmaroon: #5a0000;
+      --white: #ffffff;
+      --black: #000000;
+    }
+
+    /* Reset and typography */
+    * {
+      box-sizing: border-box;
+    }
+
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--white);
+      color: var(--black);
+    }
+
+    /* Hero container full viewport height minus fixed footer */
+    #hero {
+      position: relative;
+      height: 100vh;
+      min-height: 600px;
+      background: url('https://wallpapers.com/images/hd/group-of-physician-thumbs-up-fqj0jrpifoer8uzd.jpg') no-repeat center center/cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--white);
+      padding: 0 1rem;
+    }
+
+    /* Dark overlay */
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.30);
+      z-index: 1;
+    }
+
+    /* Hero content container */
+    #hero .content {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+    }
+
+    #hero h1 {
+      font-family: 'Lora', serif;
+      font-weight: 700;
+      font-size: 3.5rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.1;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+    }
+
+    #hero p.lead {
+      font-size: 1.4rem;
+      margin-bottom: 2.5rem;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Button group container on hero (centered below text) */
+    #heroButtons {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      gap: 1.15rem;
+      flex-wrap: wrap;
+    }
+
+    #heroButtons button {
+      background-color: var(--maroon);
+      border: none;
+      padding: 0.65rem 1.75rem;
+      font-weight: 600;
+      font-size: 1.15rem;
+      border-radius: 30px;
+      color: var(--white);
+      transition: background-color 0.3s ease;
+      box-shadow: 0 4px 8px rgba(128, 0, 0, 0.45);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+    }
+
+    #heroButtons button:hover,
+    #heroButtons button:focus {
+      background-color: var(--darkmaroon);
+      outline: none;
+      color: var(--white);
+    }
+
+    .h2{
+      border-bottom:solid;border-bottom-width: 1px;border-color:maroon;font-weight: 200;width:70%;
+    }
+    /* Login button top-right persistent */
+    #loginButton {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.5rem;
+      z-index: 11;
+    }
+
+    #loginButton button {
+      background-color: var(--maroon);
+      border: none;
+      padding: 0.55rem 1.4rem;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 30px;
+      color: var(--white);
+      transition: background-color 0.3s ease;
+      box-shadow: 0 4px 8px rgba(128, 0, 0, 0.6);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+    }
+
+    #loginButton button:hover,
+    #loginButton button:focus {
+      background-color: var(--darkmaroon);
+      outline: none;
+      color: var(--white);
+    }
+
+    /* Main informational content */
+    #mainInfo {
+      max-width: 960px;
+      margin: 1em auto 1em auto;
+      padding: 0 1rem;
+      color: var(--black);
+    }
+
+    #mainInfo h2,
+    #mainInfo h3 {
+      font-family: 'Lora', serif;
+      color: var(--maroon);
+      margin-bottom: 1rem;
+    }
+
+    #mainInfo h2 {
+      font-weight: 700;
+      font-size: 2.25rem;
+      border-bottom: 3px solid var(--maroon);
+      padding-bottom: 0.25rem;
+    }
+
+    #mainInfo h3 {
+      font-weight: 600;
+      font-size: 1.4rem;
+      margin-top: 2em;
+      margin-bottom: 0.8em;
+    }
+
+    #mainInfo p,
+    #mainInfo ul {
+      font-size: 1rem;
+      line-height: 1.55;
+      margin-bottom: 1em;
+    }
+
+    #mainInfo ul {
+      padding-left: 1.5rem;
+    }
+
+    /* Cards for goals, vision, theme */
+    .card-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1em;
+    }
+
+    .card {
+      border: 2px solid var(--maroon);
+      border-radius: 10px;
+      padding: 1.5rem 1.75rem;
+      background-color: #fff8f8;
+      box-shadow: 0 3px 8px rgba(128, 0, 0, 0.15);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 20px rgba(128, 0, 0, 0.35);
+    }
+
+    .card h4 {
+      color: var(--maroon);
+      margin-bottom: 1em;
+      font-family: 'Lora', serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card h4 i {
+      font-size: 1.45rem;
+      color: var(--darkmaroon);
+    }
+
+    /* Responsive typography */
+    @media screen and (max-width: 576px) {
+      #hero h1 {
+        font-size: 2.3rem;
+      }
+
+      #hero p.lead {
+        font-size: 1.1rem;
+      }
+
+      #mainInfo h2 {
+        font-size: 1.8rem;
+      }
+
+      #mainInfo h3 {
+        font-size: 1.2rem;
+      }
+    }
+
+    /* Footer */
+    footer {
+      background-color: var(--maroon);
+      color: var(--white);
+      text-align: center;
+      padding: 1rem 1rem;
+      position: relative;
+      bottom: 0;
+      font-size: 0.95rem;
+      user-select: none;
+      margin-top: auto;
+    }
+
+    /* Modal Content Scroll */
+    .modal-body-scrollable {
+      max-height: 65vh;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Login button fixed top-right -->
+  <div id="loginButton" class="shadow">
+    <button type="button" data-bs-toggle="modal" data-bs-target="#loginModal" aria-label="Open Login Form">
+      <i class="bi bi-box-arrow-in-right"></i> Login
+    </button>
+  </div>
+
+  <!-- Hero section -->
+  <section id="hero" role="banner" aria-label="Welcome Hero Section">
+    <div class="content">
+      <img src="ministry.png" width="130px" style="border-radius:50%;background-color: white;padding: 10px;object-fit: contain;"/>
+      <h1>Ministry Of Health And Child Care Physiotherapy & Fitness Portal</h1>
+      <p class="lead">
+        Empowering Zimbabwe through integrated physiotherapy and fitness solutions for rehabilitation,
+        recovery, and wellness.
+      </p>
+      <div id="heroButtons">
+        <button type="button" data-bs-toggle="modal" data-bs-target="#userGuideModal" aria-label="Open User Guide">
+          <i class="bi bi-book-half"></i> User Guide
+        </button>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#systemInfoModal" aria-label="Open About System">
+          <i class="bi bi-info-circle"></i> About System
+        </button>
+      </div>
+      <br><br>
+       <center style="color:white"><strong>By Takunda Chikoti @2025</strong><br><small>Scroll Down For More</small></center>
+    </div>
+   
+  </section>
+
+  <!-- Main informational content -->
+  <main id="mainInfo" role="main" style="margin-top:150px;">
+    <h2 class="h2">Our Vision, Mission & Goals</h2>
+
+    <div class="card-section">
+      <article class="card" aria-labelledby="visionTitle">
+        <h4 id="visionTitle"><i class="bi bi-eye-fill"></i> Our Vision</h4>
+        <p>
+          To build a future where physiotherapy and fitness are seamlessly merged, enabling every Zimbabwean
+          to realize their fullest physical potential with expert guidance and accessible technology.
+        </p>
+      </article>
+
+      <article class="card" aria-labelledby="missionTitle">
+        <h4 id="missionTitle"><i class="bi bi-bullseye"></i> Our Mission</h4>
+        <p>
+          To deliver an inclusive, adaptive digital platform that supports rehabilitation, chronic condition management,
+          and proactive fitness, through personalized therapy, monitoring, and clinician collaboration.
+        </p>
+      </article>
+
+      <article class="card" aria-labelledby="goalsTitle">
+        <h4 id="goalsTitle"><i class="bi bi-flag-fill"></i> Core Goals</h4>
+        <ul>
+          <li>Provide expert physiotherapy integration within fitness regimes.</li>
+          <li>Enable real-time progress tracking and adaptive workout plans.</li>
+          <li>Offer convenient remote consultations and secure communication.</li>
+          <li>Data-driven decision-making to enhance health outcomes.</li>
+          <li>Promote well-being, independence, and social inclusion.</li>
+        </ul>
+      </article>
+    </div>
+
+    <h2  style="margin-top:150px;">System Highlights</h2>
+    <ul>
+      <li>Personalized therapeutic exercise plans based on clinical data.</li>
+      <li>Secure user roles: Clients, Clinicians, and Administrators.</li>
+      <li>Real-time pain and exertion logging with feedback loops.</li>
+      <li>Comprehensive reporting and data analytics for clinicians.</li>
+      <li>Online session booking and financial management.</li>
+    </ul>
+
+
+<section id="faqSection" style="max-width: 960px; margin: 2rem auto;">
+  <h2 style="font-family: 'Lora', serif; font-size: 2.5rem; color: #800000; border-bottom: 4px solid #800000; padding-bottom: 0.6rem; margin-bottom: 2rem;">
+    <i class="bi bi-question-circle-fill me-3" style="color: #a00000; font-size: 2rem;"></i> Frequently Asked Questions
+  </h2>
+
+  <div class="row g-4">
+    <!-- FAQ Card 1 -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-sm" style="border: 2px solid #800000; border-radius: 12px;">
+        <div class="card-body" style="color:#400000;">
+          <h5 class="card-title" style="font-family:'Lora', serif; font-weight:700;">
+            <i class="bi bi-lock-fill me-2" style="color: #a00000;"></i> How do I reset my password?
+          </h5>
+          <p class="card-text" style="font-size: 1rem; line-height: 1.5;">
+            To reset your password, click the <strong>Forgot Password</strong> link on the login page. Follow the instructions sent to your registered email to securely set a new password.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ Card 2 -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-sm" style="border: 2px solid #800000; border-radius: 12px;">
+        <div class="card-body" style="color:#400000;">
+          <h5 class="card-title" style="font-family:'Lora', serif; font-weight:700;">
+            <i class="bi bi-activity me-2" style="color: #a00000;"></i> What if my exercise data is not updating?
+          </h5>
+          <p class="card-text" style="font-size: 1rem; line-height: 1.5;">
+            Refresh your browser or clear the cache to reload the latest exercise data. Persistent issues should be reported to the support team via <a href="mailto:support@physiotherapyministry.zw" style="color:#800000; font-weight:bold;">support@physiotherapyministry.zw</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ Card 3 -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-sm" style="border: 2px solid #800000; border-radius: 12px;">
+        <div class="card-body" style="color:#400000;">
+          <h5 class="card-title" style="font-family:'Lora', serif; font-weight:700;">
+            <i class="bi bi-calendar-event-fill me-2" style="color: #a00000;"></i> How can I book or cancel physiotherapy sessions?
+          </h5>
+          <p class="card-text" style="font-size: 1rem; line-height: 1.5;">
+            Visit the <strong>Appointments</strong> section on your dashboard. There, you can select available dates to book or modify existing sessions easily.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ Card 4 -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-sm" style="border: 2px solid #800000; border-radius: 12px;">
+        <div class="card-body" style="color:#400000;">
+          <h5 class="card-title" style="font-family:'Lora', serif; font-weight:700;">
+            <i class="bi bi-question-diamond-fill me-2" style="color: #a00000;"></i> Who do I contact if I experience technical difficulties?
+          </h5>
+          <p class="card-text" style="font-size: 1rem; line-height: 1.5;">
+            Contact the Ministry IT support team directly by email at <a href="mailto:support@physiotherapyministry.zw" style="color:#800000; font-weight:bold;">support@physiotherapyministry.zw</a> or call +263 77 123 4567 for prompt assistance.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ Card 5 -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-sm" style="border: 2px solid #800000; border-radius: 12px;">
+        <div class="card-body" style="color:#400000;">
+          <h5 class="card-title" style="font-family:'Lora', serif; font-weight:700;">
+            <i class="bi bi-pencil-square me-2" style="color: #a00000;"></i> How do I update my personal profile and security settings?
+          </h5>
+          <p class="card-text" style="font-size: 1rem; line-height: 1.5;">
+            Navigate to <strong>Profile Settings</strong> via the top-right user menu. Here you can update your personal information, change your password, and configure notification preferences.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+    <p class="mt-4 fst-italic text-center text-muted"  style="margin-top:150px;">
+      Developed by Takunda Chikoti in 2025 at Harare Polytechnic.
+    </p>
+  </main>
+
+  <footer  style="margin-top:150px;">
+    &copy; 2025 Ministry of Health and Childcare - Zimbabwe — All Rights Reserved.
+  </footer>
+
+  <!-- Login Modal -->
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <form class="modal-content" id="loginForm" novalidate>
+        <div class="modal-header bg-maroon text-white">
+          <h5 class="modal-title" id="loginModalLabel" style="color:black;">
+            <i class="bi bi-person-fill me-2"></i> User Login
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="username" class="form-label">Username or Email</label>
+            <input type="text" class="form-control" id="username" name="username" required autocomplete="username" />
+            <div class="invalid-feedback">Please enter your username or email.</div>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required autocomplete="current-password" />
+            <div class="invalid-feedback">Please enter your password.</div>
+          </div>
+          <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="rememberMe" />
+            <label for="rememberMe" class="form-check-label">Remember Me</label>
+          </div>
+          <div id="loginError" class="text-danger small my-2 d-none">
+            <i class="bi bi-exclamation-triangle-fill"></i> Invalid username or password.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn" style="background-color: var(--maroon); color: white;">Login</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- User Guide Modal -->
+  <div class="modal fade" id="userGuideModal" tabindex="-1" aria-labelledby="userGuideLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+      <div class="modal-content">
+        <div class="modal-body p-4" style="color:#3f0000; background:#fff8f8; font-family: 'Montserrat', sans-serif; max-height: 75vh; overflow-y: auto; overflow-x: hidden;">
+  <section id="userGuide" style="max-width: 1000px; margin:auto;">
+    <h1 style="font-family: 'Lora', serif; font-size: 2.75rem; color: #800000; border-bottom: 5px solid #800000; padding-bottom: 0.8rem; margin-bottom: 2rem;">
+      <i class="bi bi-book-half me-3" style="font-size:2rem; color:#a00000;"></i> Comprehensive User Guide
+    </h1>
+
+    <article style="margin-bottom: 3rem;">
+      <h2 style="font-family:'Lora', serif; font-size: 2rem; color: #660000; text-decoration: underline; margin-bottom: 1.2rem;">Introduction</h2>
+      <p style="font-size: 1.15rem; line-height: 1.75;">
+        Welcome to the <strong>Physiotherapy & Fitness System</strong>, a fully integrated digital platform developed to provide tailored support for physical rehabilitation and fitness needs.
+        This guide offers comprehensive instructions for users across all roles, including clients, clinicians, and administrators, helping you maximize the platform's capabilities efficiently.
+      </p>
+    </article>
+
+    <article style="margin-bottom: 3rem;">
+      <h2 style="font-family:'Lora', serif; font-size: 2rem; color: #660000; text-decoration: underline; margin-bottom: 1.2rem;">System Setup and Access</h2>
+      <div style="font-size: 1.1rem; line-height: 1.6;">
+        <ol>
+          <li><strong>System Requirements:</strong> Ensure device compatibility - modern browsers (Chrome, Firefox, Edge), stable internet connection, and screen resolution of 1366x768 or higher.</li>
+          <li><strong>Account Registration:</strong> Clients and clinicians must register using their email addresses; admins receive accounts from system managers.</li>
+          <li><strong>Login Process:</strong> Use the login form accessible on all pages; utilize ‘Remember Me’ option for convenience on personal devices.</li>
+          <li><strong>Password Recovery:</strong> Follow the ‘Forgot Password’ link for email-based reset instructions.</li>
+        </ol>
+      </div>
+    </article>
+
+    <article style="margin-bottom: 3rem;">
+      <h2 style="font-family:'Lora', serif; font-size: 2rem; color: #660000; text-decoration: underline; margin-bottom: 1.2rem;">User Interface Overview</h2>
+      <p style="font-size: 1.15rem; line-height: 1.7;">
+        The interface is designed for clarity and usability. Main components include:
+      </p>
+      <ul style="font-size: 1.1rem; line-height: 1.5; margin-left: 1.5rem;">
+        <li><strong>Dashboard:</strong> Central hub summarizing user-specific data, progress, and notifications.</li>
+        <li><strong>Navigation Menu:</strong> Accessible sidebar or topbar directing to modules like Exercises, Appointments, Communication, Analytics, and Administration.</li>
+        <li><strong>Profile and Settings:</strong> Manage personal info, security settings, and preferences.</li>
+        <li><strong>Support and Help:</strong> Integrated help desk with FAQs and contact info for technical assistance.</li>
+      </ul>
+    </article>
+
+    <article style="margin-bottom: 3rem;">
+      <h2 style="font-family:'Lora', serif; font-size: 2rem; color: #660000; text-decoration: underline; margin-bottom: 1.2rem;">Functional Instructions by User Role</h2>
+
+      <section style="margin-bottom: 2rem;">
+        <h3 style="font-family:'Lora', serif; color: #a00000; margin-bottom: 1rem;">
+          <i class="bi bi-person-fill me-2"></i> Clients / Patients
+        </h3>
+        <ul style="font-size: 1.1rem; line-height: 1.6; margin-left: 1.5rem;">
+          <li>Access and review personalized therapeutic and fitness plans.</li>
+          <li>Record daily exercise sessions, pain levels, and exertion ratings.</li>
+          <li>Book, reschedule, or cancel physiotherapy appointments online.</li>
+          <li>Communicate securely with assigned physiotherapists through the messaging platform.</li>
+          <li>Monitor longitudinal progress with graphical analysis tools.</li>
+          <li>Download and print progress reports for personal records or clinical visits.</li>
+        </ul>
+      </section>
+
+      <section style="margin-bottom: 2rem;">
+        <h3 style="font-family:'Lora', serif; color: #a00000; margin-bottom: 1rem;">
+          <i class="bi bi-heart-pulse-fill me-2"></i> Physiotherapists / Clinicians
+        </h3>
+        <ul style="font-size: 1.1rem; line-height: 1.6; margin-left: 1.5rem;">
+          <li>Create and curate therapeutic exercise libraries tailored to diverse patient needs.</li>
+          <li>Assign personalized plans and adjust them dynamically based on logged user data.</li>
+          <li>Conduct virtual consultations with patients, including notes and session recordings.</li>
+          <li>Track patient adherence and wellbeing via pain and exertion dashboards.</li>
+          <li>Generate customizable reports for clinical follow-ups and documentation.</li>
+          <li>Coordinate with administrative staff for scheduling and billing coordination.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3 style="font-family:'Lora', serif; color: #a00000; margin-bottom: 1rem;">
+          <i class="bi bi-shield-lock-fill me-2"></i> Administrators
+        </h3>
+        <ul style="font-size: 1.1rem; line-height: 1.6; margin-left: 1.5rem;">
+          <li>Manage system users - create, update, deactivate accounts with appropriate roles.</li>
+          <li>Oversee system-wide settings including security policies and data privacy compliance.</li>
+          <li>Monitor platform usage statistics and perform audit logging.</li>
+          <li>Manage payment gateways, subscription plans, and session fees.</li>
+          <li>Maintain system backups and coordinate technical maintenances.</li>
+          <li>Serve as liaison between development teams and users for feedback incorporation.</li>
+        </ul>
+      </section>
+    </article>
+
+    <article style="margin-bottom: 3rem;">
+      <h2 style="font-family:'Lora', serif; font-size: 2rem; color: #660000; text-decoration: underline; margin-bottom: 1.2rem;">
+        Troubleshooting and FAQs
+      </h2>
+      <dl style="font-size: 1.1rem;">
+        <dt style="font-weight: 700; color: #a00000;">Q: How do I reset my password?</dt>
+        <dd>Use the ‘Forgot Password’ link on the login page and follow the emailed instructions.</dd>
+
+        <dt style="font-weight: 700; color: #a00000;">Q: What if my exercises aren’t showing correctly?</dt>
+        <dd>Clear your browser cache and reload the web app; contact support if issues persist.</dd>
+
+        <dt style="font-weight: 700; color: #a00000;">Q: How do I book or cancel an appointment?</dt>
+        <dd>Navigate to the ‘Appointments’ page, select available slots or existing bookings, and follow prompts.</dd>
+
+        <dt style="font-weight: 700; color: #a00000;">Q: Who do I contact for technical help?</dt>
+        <dd>Use the support email <a href="mailto:support@physiotherapyministry.zw" style="font-weight: 700; color: #800000;">support@physiotherapyministry.zw</a> or call +263 77 123 4567.</dd>
+      </dl>
+    </article>
+
+    <article style="margin-bottom: 2rem;">
+      <h2 style="font-family:'Lora', serif; font-size: 2rem; color: #660000; text-decoration: underline; margin-bottom: 1.2rem;">
+        Contact and Feedback
+      </h2>
+      <p style="font-size: 1.1rem; line-height: 1.6;">
+        We value user feedback to continuously improve the platform. Please contact the Ministry IT support team via email for any suggestions or report issues.
+      </p>
+      <p style="font-weight: 700;">
+        Email: <a href="mailto:support@physiotherapyministry.zw" style="color: #800000;">support@physiotherapyministry.zw</a><br />
+        Phone: +263 77 123 4567
+      </p>
+    </article>
+  </section>
+</div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- About System Modal -->
+<div class="modal fade" id="systemInfoModal" tabindex="-1" aria-labelledby="systemInfoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-xl">
+    <div class="modal-content">
+      <div class="modal-header bg-maroon text-white d-flex align-items-center">
+        <h5 class="modal-title" id="systemInfoLabel" style="font-family: 'Lora', serif; font-weight: 700; font-size: 1.8rem;">
+          <i class="bi bi-info-circle me-2" style="font-size: 1.5rem;"></i> About the System
+        </h5>
+        <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4" style="font-family: 'Montserrat', sans-serif; color: #400000; background-color: #fff8f8;">
+        
+        <section style="max-width: 1000px; margin: auto;">
+
+          <!-- System Overview -->
+          <article class="mb-5">
+            <h2 class="mb-3" style="color: #800000; font-family: 'Lora', serif; border-bottom: 4px solid #800000; padding-bottom: 0.3rem;">
+              <i class="bi bi-gear-fill me-2" style="color: #a00000;"></i> System Overview
+            </h2>
+            <p style="font-size: 1.1rem; line-height: 1.7;">
+              The <strong>Ministry Physiotherapy & Fitness System</strong> is a cutting-edge digital platform that seamlessly bridges fitness training with expert physiotherapy care.
+              It empowers users to enhance rehabilitation, fitness progress, and overall wellbeing through an intuitive, secure, and data-driven environment supported by professionals.
+            </p>
+          </article>
+
+          <!-- Core Modules -->
+          <article class="mb-5">
+            <h2 class="mb-3" style="color: #800000; font-family: 'Lora', serif; border-bottom: 4px solid #800000; padding-bottom: 0.3rem;">
+              <i class="bi bi-box-seam me-2" style="color: #a00000;"></i> Core Modules
+            </h2>
+            <div class="row g-4">
+              <div class="col-md-6 col-lg-4">
+                <div class="card border-2 border-maroon shadow-sm" style="background: #fff0f0;">
+                  <div class="card-body">
+                    <h5 style="color: #660000; font-family:'Lora', serif;">
+                      <i class="bi bi-person-lines-fill me-2" style="color: #a00000;"></i> User/Client Portal
+                    </h5>
+                    <p>Interactive dashboard providing personalized plans, progress tracking, and secure messaging.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-lg-4">
+                <div class="card border-2 border-maroon shadow-sm" style="background: #fff0f0;">
+                  <div class="card-body">
+                    <h5 style="color: #660000; font-family:'Lora', serif;">
+                      <i class="bi bi-heart-pulse me-2" style="color: #a00000;"></i> Physiotherapist Workspace
+                    </h5>
+                    <p>Patient management dashboard with dynamic workout plan modifications and online consultations.</p>
+                  </div>
+                </div>
+              </div>          
+              <div class="col-md-6 col-lg-4">
+                <div class="card border-2 border-maroon shadow-sm" style="background: #fff0f0;">
+                  <div class="card-body">
+                    <h5 style="color: #660000; font-family:'Lora', serif;">
+                      <i class="bi bi-bar-chart-line-fill me-2" style="color: #a00000;"></i> Monitoring System
+                    </h5>
+                    <p>Real-time data logging of pain and exertion, enabling adaptive care recommendations.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-lg-4">
+                <div class="card border-2 border-maroon shadow-sm" style="background: #fff0f0;">
+                  <div class="card-body">
+                    <h5 style="color: #660000; font-family:'Lora', serif;">
+                      <i class="bi bi-shield-lock-fill me-2" style="color: #a00000;"></i> Administrative Tools
+                    </h5>
+                    <p>User management, compliance oversight, system configuration, and reporting features.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-lg-4">
+                <div class="card border-2 border-maroon shadow-sm" style="background: #fff0f0;">
+                  <div class="card-body">
+                    <h5 style="color: #660000; font-family:'Lora', serif;">
+                      <i class="bi bi-wallet2 me-2" style="color: #a00000;"></i> Financial Module
+                    </h5>
+                    <p>Secure online payment handling for session fees and subscription management.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Technology Stack -->
+          <article class="mb-5">
+            <h2 class="mb-3" style="color: #800000; font-family: 'Lora', serif; border-bottom: 4px solid #800000; padding-bottom: 0.3rem;">
+              <i class="bi bi-laptop-fill me-2" style="color: #a00000;"></i> Technology Stack
+            </h2>
+            <table class="table table-bordered border-maroon" style="background: #fff4f4; color: #400000;">
+              <thead class="bg-maroon text-white" style="font-family: 'Lora', serif;">
+                <tr>
+                  <th>Component</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Frontend</td>
+                  <td>HTML5, CSS3, Bootstrap 5, JavaScript with responsive UI components</td>
+                </tr>
+                <tr>
+                  <td>Backend</td>
+                  <td>ASP.NET Core Web API providing RESTful services and security</td>
+                </tr>
+                <tr>
+                  <td>Database</td>
+                  <td>Microsoft SQL Server with advanced data encryption at rest</td>
+                </tr>
+                <tr>
+                  <td>Security</td>
+                  <td>OAuth 2.0 based authentication, HTTPS enforcement, data encryption in transit</td>
+                </tr>
+              </tbody>
+            </table>
+          </article>
+
+          <!-- Compliance & Security -->
+          <article class="mb-5">
+            <h2 class="mb-3" style="color: #800000; font-family: 'Lora', serif; border-bottom: 4px solid #800000; padding-bottom: 0.3rem;">
+              <i class="bi bi-shield-check me-2" style="color: #a00000;"></i> Compliance and Security
+            </h2>
+            <p style="font-size: 1.1rem; line-height: 1.7;">
+              The platform complies fully with Zimbabwe's health data privacy legislation including role-based access control and encrypted communication,
+              guaranteeing confidentiality, integrity, and availability of all sensitive patient and user data.
+            </p>
+          </article>
+
+          <!-- Benefits -->
+          <article class="mb-5">
+            <h2 class="mb-3" style="color: #800000; font-family: 'Lora', serif; border-bottom: 4px solid #800000; padding-bottom: 0.3rem;">
+              <i class="bi bi-patch-check-fill me-2" style="color: #a00000;"></i> Benefits of the System
+            </h2>
+            <div class="row g-4">
+              <div class="col-md-6">
+                <ul style="list-style-type:none; padding-left: 0;">
+                  <li><i class="bi bi-check-circle-fill me-2" style="color: #a00000;"></i> Integrates physiotherapy and fitness data for holistic health.</li>
+                  <li><i class="bi bi-check-circle-fill me-2" style="color: #a00000;"></i> Enables remote consultations improving accessibility.</li>
+                  <li><i class="bi bi-check-circle-fill me-2" style="color: #a00000;"></i> Data analytics for informed clinical decision-making.</li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <ul style="list-style-type:none; padding-left: 0;">
+                  <li><i class="bi bi-check-circle-fill me-2" style="color: #a00000;"></i> Personalized adaptive exercise plans improve adherence.</li>
+                  <li><i class="bi bi-check-circle-fill me-2" style="color: #a00000;"></i> Promotes improved public health outcomes via technology.</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+
+          <!-- Example Reports -->
+          <article class="mb-5">
+            <h2 class="mb-3" style="color: #800000; font-family: 'Lora', serif; border-bottom: 4px solid #800000; padding-bottom: 0.3rem;">
+              <i class="bi bi-bar-chart-fill me-2" style="color: #a00000;"></i> Sample Analytics Report
+            </h2>
+            <p>Below is an example summary of user progress metrics illustrating the system's analytics capabilities:</p>
+            <table class="table table-striped table-bordered border-maroon mt-3" style="background: #fff4f4; color: #400000;">
+              <thead class="bg-maroon text-white" style="font-family: 'Lora', serif;">
+                <tr>
+                  <th>Metric</th>
+                  <th>Baseline</th>
+                  <th>After 3 Months</th>
+                  <th>Improvement %</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Mobility Score</td><td>45</td><td>75</td><td>66.7%</td></tr>
+                <tr><td>Strength Index</td><td>30</td><td>50</td><td>66.7%</td></tr>
+                <tr><td>Pain Level (low is better)</td><td>70</td><td>30</td><td>−57.1%</td></tr>
+                <tr><td>Exercise Adherence %</td><td>60%</td><td>85%</td><td>41.7%</td></tr>
+              </tbody>
+            </table>
+          </article>
+
+          <!-- Development Credits -->
+          <article class="mb-4" style="color: #660000; font-style: italic;">
+            <p>
+              Developed by <strong>Takunda Chikoti</strong> at <strong>Harare Polytechnic</strong> in 2025 as part of the Ministry of Health’s digital transformation initiative.
+            </p>
+          </article>
+
+          <!-- Contact -->
+          <article>
+            <h2 class="mb-3" style="color: #800000; font-family: 'Lora', serif; border-bottom: 4px solid #800000; padding-bottom: 0.3rem;">
+              <i class="bi bi-envelope-fill me-2" style="color: #a00000;"></i> Contact and Support
+            </h2>
+            <p style="font-size: 1.1rem; line-height: 1.6;">
+              For inquiries, technical support, or feedback, please contact:
+            </p>
+            <ul style="list-style: none; padding-left: 0; font-size:1.1rem;">
+              <li><i class="bi bi-envelope me-2" style="color: #a00000;"></i> Email: <a href="mailto:support@physiotherapyministry.zw" style="color:#800000; font-weight: 700;">support@physiotherapyministry.zw</a></li>
+              <li><i class="bi bi-telephone-fill me-2" style="color: #a00000;"></i> Phone: +263 77 123 4567</li>
+            </ul>
+          </article>
+        </section>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    (() => {
+      const loginForm = document.getElementById('loginForm');
+      const loginError = document.getElementById('loginError');
+
+      loginForm.addEventListener('submit', (evt) => {
+        evt.preventDefault();
+        loginError.classList.add('d-none');
+
+        if (!loginForm.checkValidity()) {
+          loginForm.classList.add('was-validated');
+          return;
+        }
+
+        const username = loginForm.username.value.trim();
+        const password = loginForm.password.value.trim();
+
+        // Mock authentication - replace with real backend logic
+        if (username === 'admin' && password === 'admin') {
+                  bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();
+          loginForm.reset();
+          loginForm.classList.remove('was-validated');
+document.location.href='clinic.html';return;
+        } else {if (username === 'user1' && password === 'user1'){
+document.location.href='patient.html';return;}
+else {
+          loginError.classList.remove('d-none');
+        }}
+      });
+    })();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ministry Physiotherapy System - Clinician Dashboard</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Lora:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #fff8f8;
+      color: #400000;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-family: 'Lora', serif;
+      color: #800000;
+      font-weight: 700;
+    }
+
+    #app {
+      display: flex;
+      min-height: 100vh;
+      flex-direction: column;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background-color: #800000;
+      color: #fff;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      padding-top: 1.5rem;
+      transition: width 0.3s ease;
+      overflow-y: auto;
+      user-select: none;
+      z-index: 1050;
+    }
+
+    .sidebar.collapsed {
+      width: 80px;
+    }
+
+    .sidebar .logo {
+      font-family: 'Lora', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-align: center;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #5a0000;
+      user-select: text;
+    }
+
+    .sidebar .nav-link {
+      color: #fff;
+      font-weight: 600;
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .sidebar .nav-link:hover,
+    .sidebar .nav-link.active {
+      background-color: #5a0000;
+      text-decoration: none;
+    }
+
+    .sidebar .nav-link i {
+      font-size: 1.2rem;
+    }
+
+    /* Main content */
+    .main-content {
+      margin-left: 250px;
+      padding: 2rem 3rem;
+      flex: 1;
+      transition: margin-left 0.3s ease;
+    }
+
+    .sidebar.collapsed+.main-content {
+      margin-left: 80px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .header h1 {
+      font-size: 2.25rem;
+    }
+
+    .toggle-btn {
+      font-size: 1.8rem;
+      background: none;
+      border: none;
+      color: #800000;
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.3s ease;
+    }
+
+    .toggle-btn:hover,
+    .toggle-btn:focus {
+      color: #5a0000;
+      outline: none;
+    }
+
+    /* Dashboard cards */
+    .card-custom {
+      border: 2px solid #800000;
+      border-radius: 12px;
+      background-color: #fff0f0;
+      box-shadow: 0 5px 15px rgba(128, 0, 0, 0.12);
+      padding: 1.5rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .card-custom h4 {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      color: #660000;
+    }
+
+    /* Modal styles */
+    .modal-content {
+      background-color: #fff8f8 !important;
+      color: #400000 !important;
+    }
+
+    .modal-body-scrollable {
+      max-height: 70vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 1.5rem 2rem;
+    }
+
+    /* Buttons */
+    .btn-maroon {
+      background-color: #800000;
+      border-radius: 30px;
+      padding: 0.6rem 1.8rem;
+      font-weight: 600;
+      color: white;
+      border: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-maroon:hover,
+    .btn-maroon:focus {
+      background-color: #5a0000;
+      outline: none;
+      color: white;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 0.75rem 0;
+      }
+
+      .sidebar.collapsed {
+        width: 100%;
+      }
+
+      .sidebar .nav-link {
+        justify-content: center;
+        padding: 0.5rem 0;
+      }
+
+      .main-content,
+      .sidebar.collapsed+.main-content {
+        margin-left: 0;
+        padding: 1rem 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <div class="logo">Physiotherapy System</div>
+      <a href="#dashboardSection" class="nav-link active" onclick="selectSection(event)"> <i class="bi bi-speedometer2"></i> Dashboard</a>
+      <a href="#patientsSection" class="nav-link" onclick="selectSection(event)"> <i class="bi bi-people-fill"></i> Patients</a>
+      <a href="#sessionsSection" class="nav-link" onclick="selectSection(event)"> <i class="bi bi-calendar-check"></i> Sessions</a>
+      <a href="#reportsSection" class="nav-link" onclick="selectSection(event)"> <i class="bi bi-file-earmark-text"></i> Reports</a>
+      <a href="#virtualConsultSection" class="nav-link" onclick="selectSection(event)"> <i class="bi bi-camera-video"></i> Virtual Consults</a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="header">
+        <h1><i class="bi bi-journals"></i> Clinician Dashboard</h1>
+        <button class="toggle-btn" id="sidebarToggle" aria-label="Toggle Sidebar">
+          <i class="bi bi-list"></i>
+        </button>
+      </header>
+
+      <!-- Dashboard Section -->
+      <section id="dashboardSection" class="content-section">
+        <div class="card-custom">
+          <h4><i class="bi bi-bar-chart-line-fill"></i> Patient Progress Overview</h4>
+          <canvas id="patientProgressChart" aria-label="Line chart displaying patient progress data" role="img"></canvas>
+          <p>Shows multi-metric tracked improvements including mobility, strength, and pain levels over 12 weeks.</p>
+        </div>
+
+        <div class="card-custom">
+          <h4><i class="bi bi-pie-chart-fill"></i> Exercise Compliance Analysis</h4>
+          <canvas id="dashboardExerciseComplianceChart" aria-label="Pie chart showing exercise compliance" role="img"></canvas>
+          <p>Displays the ratio of exercises completed versus those pending, helping clinicians understand patient adherence.</p>
+        </div>
+      </section>
+
+      <!-- Patients Section -->
+      <section id="patientsSection" class="content-section d-none">
+        <div class="card-custom">
+          <h4><i class="bi bi-people-fill"></i> Manage Patients</h4>
+          <p>View, search, and manage patient data including history, current status, and assigned therapy plans.</p>
+          <button class="btn btn-maroon" data-bs-toggle="modal" data-bs-target="#patientListModal">Patient List</button>
+        </div>
+      </section>
+
+      <!-- Sessions Section -->
+      <section id="sessionsSection" class="content-section d-none">
+        <div class="card-custom">
+          <h4><i class="bi bi-calendar-event-fill"></i> Manage Therapy Sessions</h4>
+          <p>Schedule, view, and modify patient therapy sessions including virtual consultations.</p>
+          <button class="btn btn-maroon" data-bs-toggle="modal" data-bs-target="#scheduleModal">Open Scheduler</button>
+        </div>
+      </section>
+
+      <!-- Reports Section -->
+      <section id="reportsSection" class="content-section d-none">
+        <div class="card-custom">
+          <h4><i class="bi bi-file-earmark-text-fill"></i> Reports and Analytics</h4>
+          <p>Generate detailed reports on patient progress, compliance, and session effectiveness.</p>
+          <button class="btn btn-maroon" data-bs-toggle="modal" data-bs-target="#reportsModal">View Reports</button>
+        </div>
+      </section>
+
+      <!-- Virtual Consult Section -->
+      <section id="virtualConsultSection" class="content-section d-none">
+        <div class="card-custom">
+          <h4><i class="bi bi-camera-video-fill"></i> Virtual Consultations</h4>
+          <p>Start and document video consultations with patients securely.</p>
+          <button class="btn btn-maroon" data-bs-toggle="modal" data-bs-target="#videoConsultModal">Start Consultation</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Patient List Modal -->
+  <div class="modal fade" id="patientListModal" tabindex="-1" aria-labelledby="patientListModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-maroon text-white">
+          <h5 class="modal-title" id="patientListModalLabel"><i class="bi bi-people-fill me-2"></i> Patient List</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+              <tr>
+                <th>Patient ID</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Last Session</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>PT001</td>
+                <td>Jane Smith</td>
+                <td>35</td>
+                <td>2025-10-10</td>
+                <td><span class="badge bg-success">Active</span></td>
+                <td><button class="btn btn-maroon btn-sm" data-bs-toggle="modal" data-bs-target="#patientDetailsModal" onclick="loadPatient('PT001')">View</button></td>
+              </tr>
+              <tr>
+                <td>PT002</td>
+                <td>John Doe</td>
+                <td>42</td>
+                <td>2025-10-05</td>
+                <td><span class="badge bg-warning text-dark">On Hold</span></td>
+                <td><button class="btn btn-maroon btn-sm" data-bs-toggle="modal" data-bs-target="#patientDetailsModal" onclick="loadPatient('PT002')">View</button></td>
+              </tr>
+              <tr>
+                <td>PT003</td>
+                <td>Alice Johnson</td>
+                <td>50</td>
+                <td>2025-09-30</td>
+                <td><span class="badge bg-secondary">Discharged</span></td>
+                <td><button class="btn btn-maroon btn-sm" data-bs-toggle="modal" data-bs-target="#patientDetailsModal" onclick="loadPatient('PT003')">View</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Patient Details Modal -->
+  <div class="modal fade" id="patientDetailsModal" tabindex="-1" aria-labelledby="patientDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+      <div class="modal-content">
+        <div class="modal-header bg-maroon text-white d-flex align-items-center">
+          <h5 class="modal-title" id="patientDetailsModalLabel"><i class="bi bi-person-circle me-2"></i> Patient Details</h5>
+          <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body modal-body-scrollable">
+          <h4 id="patientName" class="mb-3">Loading...</h4>
+          <div class="row">
+            <div class="col-md-4">
+              <p><strong>Age:</strong> <span id="patientAge"></span></p>
+              <p><strong>Last Session Date:</strong> <span id="lastSessionDate"></span></p>
+              <p><strong>Status:</strong> <span id="patientStatus"></span></p>
+              <p><strong>Contact:</strong> <span id="patientContact"></span></p>
+            </div>
+            <div class="col-md-8">
+              <h5>Exercise Compliance</h5>
+              <canvas id="modalExerciseComplianceChart" aria-label="Pie chart showing exercise compliance" role="img"></canvas>
+              <p class="mt-3">Proportion of completed vs pending exercises.</p>
+
+              <h5 class="mt-4">Pain and Mobility Trends</h5>
+              <canvas id="painMobilityChart" aria-label="Line chart showing pain and mobility trends" role="img"></canvas>
+              <p class="mt-2">Shows pain reduction and mobility improvement over sessions.</p>
+            </div>
+          </div>
+          <button class="btn btn-maroon mt-3" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reports Modal -->
+  <div class="modal fade" id="reportsModal" tabindex="-1" aria-labelledby="reportsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+      <div class="modal-content">
+        <div class="modal-header bg-maroon text-white d-flex align-items-center">
+          <h5 class="modal-title" id="reportsModalLabel"><i class="bi bi-file-earmark-text-fill me-2"></i> Detailed Reports</h5>
+          <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body modal-body-scrollable">
+          <h4 class="mb-3">Patient Progress Summary</h4>
+          <table class="table table-bordered">
+            <thead class="table-dark">
+              <tr>
+                <th>Patient</th>
+                <th>Exercises Completed</th>
+                <th>Pain Reduction %</th>
+                <th>Mobility Increase %</th>
+                <th>Last Updated</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Jane Smith</td>
+                <td>85%</td>
+                <td>60%</td>
+                <td>55%</td>
+                <td>2025-10-12</td>
+              </tr>
+              <tr>
+                <td>John Doe</td>
+                <td>75%</td>
+                <td>40%</td>
+                <td>65%</td>
+                <td>2025-10-10</td>
+              </tr>
+              <tr>
+                <td>Alice Johnson</td>
+                <td>90%</td>
+                <td>70%</td>
+                <td>60%</td>
+                <td>2025-10-08</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h4 class="mt-5 mb-3">Compliance Overview</h4>
+          <canvas id="complianceOverviewChart" aria-label="Bar chart of compliance percentages" role="img"></canvas>
+          <p class="mt-2">This bar chart shows exercise compliance levels by patient over the last month.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scheduler Modal -->
+  <div class="modal fade" id="scheduleModal" tabindex="-1" aria-labelledby="scheduleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-md">
+      <div class="modal-content">
+        <div class="modal-header bg-maroon text-white">
+          <h5 class="modal-title" id="scheduleModalLabel"><i class="bi bi-calendar-plus-fill me-2"></i> Schedule Therapy Session</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="sessionSchedulerForm" novalidate>
+            <div class="mb-3">
+              <label for="sessionDate" class="form-label">Session Date</label>
+              <input type="date" id="sessionDate" class="form-control" required />
+              <div class="invalid-feedback">Please select a valid date.</div>
+            </div>
+            <div class="mb-3">
+              <label for="sessionTime" class="form-label">Session Time</label>
+              <input type="time" id="sessionTime" class="form-control" required />
+              <div class="invalid-feedback">Please select a valid time.</div>
+            </div>
+            <div class="mb-3">
+              <label for="sessionType" class="form-label">Session Type</label>
+              <select id="sessionType" class="form-select" required>
+                <option value="">Select session type</option>
+                <option>Virtual Consultation</option>
+                <option>In-Person Clinic Visit</option>
+                <option>Home Visit</option>
+              </select>
+              <div class="invalid-feedback">Session type required.</div>
+            </div>
+            <button type="submit" class="btn btn-maroon">Schedule</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Virtual Consult Modal -->
+  <div class="modal fade" id="videoConsultModal" tabindex="-1" aria-labelledby="videoConsultModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-maroon text-white">
+          <h5 class="modal-title" id="videoConsultModalLabel"><i class="bi bi-camera-video-fill me-2"></i> Virtual Consultation</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Status:</strong> Connected with patient <span id="vcPatientName">Loading...</span>.</p>
+          <p><strong>Session Notes:</strong></p>
+          <textarea id="sessionNotes" class="form-control" rows="6" placeholder="Enter real-time notes during consultation..."></textarea>
+          <button id="saveNotesBtn" class="btn btn-maroon mt-3">Save Notes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<br><br>
+<center>
+ <button class="btn btn-maroon mt-3" onclick="event.preventDefault();document.location.href='index.html';">LOGOUT</button>
+   </center>
+<br><br>
+ 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Sidebar toggle
+    const sidebar = document.getElementById('sidebar');
+    document.getElementById('sidebarToggle').addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+    });
+
+    // Navigation highlighting & content toggling
+    function selectSection(event) {
+      event.preventDefault();
+      const targetId = event.currentTarget.getAttribute('href').substring(1);
+
+      // Remove active from nav links
+      document.querySelectorAll('.sidebar .nav-link').forEach(link => link.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+      // Hide all content sections
+      document.querySelectorAll('.content-section').forEach(sec => sec.classList.add('d-none'));
+
+      // Show the target section
+      document.getElementById(targetId).classList.remove('d-none');
+    }
+
+    // Modal auto-close behavior on second modal open
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+      modal.addEventListener('show.bs.modal', event => {
+        document.querySelectorAll('.modal.show').forEach(openModal => {
+          if (openModal !== modal) {
+            bootstrap.Modal.getInstance(openModal).hide();
+          }
+        });
+      });
+    });
+
+    // Data for patients
+    const patientsData = {
+      PT001: {
+        name: "Jane Smith",
+        age: 35,
+        lastSession: "2025-10-10",
+        status: "Active",
+        contact: "jane.smith@ministryemail.gov.zw",
+        exerciseCompliance: [70, 75, 80, 85, 90, 95, 88, 92, 94, 90, 93, 95],
+        painTrend: [65, 60, 58, 55, 42, 40, 38, 35, 30, 32, 31, 28],
+        mobilityTrend: [40, 45, 48, 50, 52, 55, 57, 60, 63, 65, 68, 70]
+      },
+      PT002: {
+        name: "John Doe",
+        age: 42,
+        lastSession: "2025-10-05",
+        status: "On Hold",
+        contact: "john.doe@ministryemail.gov.zw",
+        exerciseCompliance: [60, 62, 65, 70, 72, 60, 65, 67, 68, 70, 72, 74],
+        painTrend: [70, 72, 70, 65, 60, 58, 55, 52, 50, 48, 45, 44],
+        mobilityTrend: [30, 32, 35, 38, 40, 43, 45, 48, 50, 52, 53, 55]
+      },
+      PT003: {
+        name: "Alice Johnson",
+        age: 50,
+        lastSession: "2025-09-30",
+        status: "Discharged",
+        contact: "alice.johnson@ministryemail.gov.zw",
+        exerciseCompliance: [90, 92, 94, 96, 98, 92, 90, 94, 96, 98, 99, 100],
+        painTrend: [30, 28, 25, 20, 18, 15, 14, 12, 10, 10, 8, 6],
+        mobilityTrend: [60, 62, 65, 67, 70, 72, 75, 78, 80, 82, 85, 88]
+      }
+    };
+
+    // Chart instances tracking
+    let modalExerciseComplianceChartInstance = null;
+    let painMobilityChartInstance = null;
+
+    // Load patient details modal charts
+    function loadPatient(patientId) {
+      const data = patientsData[patientId];
+      if (!data) return;
+
+      document.getElementById('patientName').textContent = data.name;
+      document.getElementById('patientAge').textContent = data.age;
+      document.getElementById('lastSessionDate').textContent = data.lastSession;
+      document.getElementById('patientStatus').innerHTML = data.status === "Active"
+        ? '<span class="badge bg-success">Active</span>'
+        : data.status === "On Hold" ? '<span class="badge bg-warning text-dark">On Hold</span>' : '<span class="badge bg-secondary">Discharged</span>';
+      document.getElementById('patientContact').textContent = data.contact;
+
+      // Destroy previous modal exercise compliance chart if exists
+      if (modalExerciseComplianceChartInstance) {
+        modalExerciseComplianceChartInstance.destroy();
+        modalExerciseComplianceChartInstance = null;
+      }
+      const modalComplianceCtx = document.getElementById('modalExerciseComplianceChart').getContext('2d');
+      const completed = data.exerciseCompliance.reduce((a, b) => a + b, 0) / data.exerciseCompliance.length;
+      const pending = 100 - completed;
+      modalExerciseComplianceChartInstance = new Chart(modalComplianceCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Completed', 'Pending'],
+          datasets: [{
+            data: [completed, pending],
+            backgroundColor: ['#800000', '#dccccc']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: 'bottom' } }
+        }
+      });
+
+      // Destroy previous pain/mobility chart instance if exists
+      if (painMobilityChartInstance) {
+        painMobilityChartInstance.destroy();
+        painMobilityChartInstance = null;
+      }
+      const painMobilityCtx = document.getElementById('painMobilityChart').getContext('2d');
+      painMobilityChartInstance = new Chart(painMobilityCtx, {
+        type: 'line',
+        data: {
+          labels: ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S12'],
+          datasets: [{
+            label: 'Pain Level',
+            data: data.painTrend,
+            borderColor: '#a00000',
+            backgroundColor: 'rgba(160,0,0,0.3)',
+            fill: false,
+            tension: 0.3,
+            yAxisID: 'y1'
+          }, {
+            label: 'Mobility Score',
+            data: data.mobilityTrend,
+            borderColor: '#800000',
+            backgroundColor: 'rgba(128,0,0,0.3)',
+            fill: false,
+            tension: 0.3,
+            yAxisID: 'y2'
+          }]
+        },
+        options: {
+          responsive: true,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+          stacked: false,
+          scales: {
+            y1: {
+              type: 'linear',
+              display: true,
+              position: 'left',
+              min: 0,
+              max: 100,
+              title: {
+                display: true,
+                text: 'Pain Level (Lower is Better)'
+              }
+            },
+            y2: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+              min: 0,
+              max: 100,
+              grid: { drawOnChartArea: false },
+              title: {
+                display: true,
+                text: 'Mobility Score (Higher is Better)'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Initialize main dashboard charts
+    let patientProgressChartInstance = null;
+    let dashboardExerciseComplianceChartInstance = null;
+    let complianceOverviewChartInstance = null;
+
+    function initializeDashboardCharts() {
+      // Patient Progress Line Chart
+      const progressCtx = document.getElementById('patientProgressChart').getContext('2d');
+      if (patientProgressChartInstance) patientProgressChartInstance.destroy();
+      patientProgressChartInstance = new Chart(progressCtx, {
+        type: 'line',
+        data: {
+          labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7', 'Week 8', 'Week 9', 'Week 10', 'Week 11', 'Week 12'],
+          datasets: [{
+            label: 'Mobility Score',
+            data: [40, 45, 48, 50, 52, 55, 57, 60, 63, 65, 68, 70],
+            borderColor: '#800000',
+            fill: false,
+            tension: 0.2
+          }, {
+            label: 'Strength Index',
+            data: [30, 32, 35, 38, 40, 43, 45, 48, 50, 52, 53, 55],
+            borderColor: '#a00000',
+            fill: false,
+            tension: 0.2
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom' }
+          },
+          scales: {
+            y: { beginAtZero: true, max: 100 }
+          }
+        }
+      });
+
+      // Exercise Compliance Pie Chart (Dashboard)
+      const complianceCtx = document.getElementById('dashboardExerciseComplianceChart').getContext('2d');
+      if (dashboardExerciseComplianceChartInstance) dashboardExerciseComplianceChartInstance.destroy();
+      dashboardExerciseComplianceChartInstance = new Chart(complianceCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Completed', 'Pending'],
+          datasets: [{
+            data: [85, 15],
+            backgroundColor: ['#800000', '#dccccc']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: 'bottom' }
+          }
+        }
+      });
+    }
+
+    // Initialize reports modal chart when modal opens
+    let reportsComplianceChartInstance = null;
+    const reportsModal = document.getElementById('reportsModal');
+    reportsModal.addEventListener('shown.bs.modal', () => {
+      const complianceOverviewCtx = document.getElementById('complianceOverviewChart').getContext('2d');
+      if (reportsComplianceChartInstance) {
+        reportsComplianceChartInstance.destroy();
+      }
+      reportsComplianceChartInstance = new Chart(complianceOverviewCtx, {
+        type: 'bar',
+        data: {
+          labels: ["Jane Smith", "John Doe", "Alice Johnson"],
+          datasets: [{
+            label: 'Exercise Compliance (%)',
+            data: [85, 75, 90],
+            backgroundColor: '#800000'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: true }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              title: { display: true, text: 'Compliance Percentage' }
+            }
+          }
+        }
+      });
+    });
+
+    // Scheduler form validation and modal closing
+    document.getElementById('sessionSchedulerForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const form = e.target;
+      if (!form.checkValidity()) {
+        form.classList.add('was-validated');
+        return;
+      }
+      alert('Therapy session scheduled successfully!');
+      const scheduleModalInstance = bootstrap.Modal.getInstance(document.getElementById('scheduleModal'));
+      scheduleModalInstance.hide();
+      form.reset();
+      form.classList.remove('was-validated');
+    });
+
+    // Initialize dashboard charts on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      initializeDashboardCharts();
+    });
+  </script>
+</body>
+
+</html>
